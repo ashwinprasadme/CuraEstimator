@@ -1,0 +1,180 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- pegasus.min.js code is embedded to save a network call -->
+<script>
+  function pegasus(a,b){return b=new XMLHttpRequest,b.open("GET",a),
+  a=[],b.onreadystatechange=b.then=function(c,d,e){if(c.call&&(a=[,c,d]),
+  4==b.readyState&&(e=a[0|b.status/200]))try{e(JSON.parse(b.responseText),b)}
+  catch(f){e(null,b)}},b.send(),b}
+</script>
+
+<!-- Start request -->
+
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="http://pingendo.github.io/pingendo-bootstrap/themes/default/bootstrap.css" rel="stylesheet" type="text/css">
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <style>
+    .chromeFrameInstallDefaultStyle {
+      margin-top: 10px;
+      width: 800px;
+      border: 5px solid blue;
+    }
+  </style>
+
+  <script src="static/js/Three.js"></script>
+  <script src="static/js/plane.js"></script>
+  <script src="static/js/thingiview.js"></script>
+
+  <script>
+    window.onload = function() {
+    	// document.getElementById('files').addEventListener('change', handleFileSelect, false);
+      // You may want to place these lines inside an onload handler
+      CFInstall.check({
+        mode: "inline", // the default
+        node: "prompt"
+      });
+
+      thingiurlbase = "../static/js";
+      thingiview = new Thingiview("viewer");
+      thingiview.setObjectColor('#C0D8F0');
+      thingiview.initScene();
+      // thingiview.setShowPlane(true);
+      if (getUrlVars()["stl"]) {
+        thingiview.loadSTL(getUrlVars()["stl"]);
+      } else {
+        thingiview.loadSTL("../cura/uploads/{{ stl_name }}.stl");
+        // thingiview.loadPLY("");
+      }
+    }
+
+    function getUrlVars() {
+      var vars = {};
+      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
+        vars[key] = value;
+      });
+      return vars;
+    }
+
+    function handleFileSelect(evt) {
+    			var file = evt.target.files[0]; // FileList object
+          thingiview.loadSTL(file);
+    			console.log('File opened: '+file.name);
+        }
+
+  </script>
+
+</head>
+
+<body>
+  <div class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <p>
+            <input onclick="thingiview.setCameraView('top');" type="button" value="Top" />
+            <input onclick="thingiview.setCameraView('side');" type="button" value="Side" />
+            <input onclick="thingiview.setCameraView('bottom');" type="button" value="Bottom" />
+            <input onclick="thingiview.setCameraView('diagonal');" type="button" value="Diagonal" />
+
+            <input onclick="thingiview.setCameraZoom(5);" type="button" value="Zoom +" />
+            <input onclick="thingiview.setCameraZoom(-5);" type="button" value="Zoom -" /> Rotation:
+            <input onclick="thingiview.setRotation(true);" type="button" value="on" /> |
+            <input onclick="thingiview.setRotation(false);" type="button" value="off" />
+          </p>
+
+          <div id="viewer" style="width:100%;height:400px"> </div>
+
+          <p>
+            <input onclick="thingiview.setObjectMaterial('wireframe');" type="button" value="Wireframe" />
+            <input onclick="thingiview.setObjectMaterial('solid');" type="button" value="Solid" />
+          </p>
+
+          <p>
+            <!-- Plane: <a href="#" onclick="thingiview.setShowPlane(false)">Hide</a> | <a href="#" onclick="thingiview.setShowPlane(true)">Show</a> -->
+            <br/> Background Color: <a href="#" onclick="thingiview.setBackgroundColor('#606060')">Gray</a> | <a href="#" onclick="thingiview.setBackgroundColor('#ffffff')">White</a> | <a href="#" onclick="thingiview.setBackgroundColor('#000000')">Black</a>
+            <br/> Object Color: <a href="#" onclick="thingiview.setObjectColor('#ffffff')">White</a> | <a href="#" onclick="thingiview.setObjectColor('#aa0000')">Red</a> | <a href="#" onclick="thingiview.setObjectColor('#CDFECD')">Green</a> | <a href="#" onclick="thingiview.setObjectColor('#C0D8F0')">Blue</a>
+            <br/>
+          </p>
+
+        </div>
+        <div class="col-md-4">
+          <form role="form" action="/" method=post enctype=multipart/form-data>
+            <!-- <div class="form-group">
+              <label class="control-label" for="exampleInputEmail1">Email address</label>
+              <input class="form-control" id="exampleInputEmail1" placeholder="Enter email" type="email" name="email">
+            </div> -->
+            <!-- <div class="form-group">
+              <label class="control-label">Choose File</label>
+              <input class="form-control" type="file" id="files" name="files" multiple/>
+            </div> -->
+            <h2> Price : </h2>
+            <h3 id="cost">not</h3>
+            <h2> Time : </h2>
+            <h3 id="time">not time</h3>
+            <div class="form-group">
+              <label class="control-label">Quality</label>
+              <select class="form-control" id="quality">
+                <option value="good">good</option>
+                <option value="best">best</option>
+                <option value="normal">normal</option>
+              </select>
+            </div>
+            <!-- <button type="submit" class="btn btn-default">Submit</button> -->
+            <button type="button" class="btn btn-primary" name="button" >Get Estimate!</button>
+          </form>
+          <!-- <ul>
+            <li><a href="#" onclick="thingiview.loadSTL('../examples/objects/cube.stl')">render</a> | <a href="objects/cube.stl">download</a> Cube with hole</li>
+            <li><a href="#" onclick="thingiview.loadSTL('../examples/objects/groove_mount.stl')">render</a> | <a href="objects/groove_mount.stl">download</a> Groove Mount</li>
+            <li><a href="#" onclick="thingiview.loadSTL('../examples/objects/wade.stl')">render</a> | <a href="objects/wade.stl">download</a> Wade Extruder (buggy)</li>
+            <li><a href="#" onclick="thingiview.loadSTL('../examples/objects/tree.stl')">render</a> | <a href="objects/tree.stl">download</a> Tree</li>
+            <li><a href="#" onclick="thingiview.loadSTL('../examples/objects/mbotplate1.stl')">render</a> | <a href="objects/mbotplate1.stl">download</a> Prusa Plate 1 (big)</li>
+            <li><a href="#" onclick="thingiview.loadSTL('../examples/objects/mbotplate2.stl')">render</a> | <a href="objects/mbotplate2.stl">download</a> Prusa Plate 2</li>
+            <li><a href="#" onclick="thingiview.loadSTL('../examples/objects/triangle.stl')">render</a> | <a href="objects/triangle.stl">download</a> Twisted Triangle Box (way too huge)</li>
+          </ul> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+
+  $("button").click(function(){
+    var quality = $("#quality").val();
+    $.get("http://128.199.159.138/dev?quality="+ quality +"&filename="+ "{{ stl_name }}.stl", function(data, status){
+        alert("Data: " + data + "\nStatus: " + status);
+    });
+});
+  </script>
+
+
+    <script>
+    $.ajaxSetup ({
+    // Disable caching of AJAX responses
+    cache: false
+    });
+
+    var ajax_request = function() {
+  // body...
+      $.ajax('http://128.199.159.138/static/cura/uploads/{{ stl_name }}.json').then(function(data) {
+
+        $('#cost').text(data.price);
+        $('#time').text(data.print_time);
+
+      });
+};
+setInterval(ajax_request, 5000);
+
+    </script>
+
+
+</body>
+
+</html>

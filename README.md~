@@ -8,4 +8,4 @@ Takes STL file and slicing parameters from client using HTML form and performs t
 + AJAX polling on client side
 + JavaScript - jQuery - BootStrap
 + gcoder analyzer from OpenSource PronterFace
-+ Flask-Mail for SMTP emails  
++ Flask-Mail for SMTP emails 
